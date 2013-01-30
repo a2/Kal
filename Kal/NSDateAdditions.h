@@ -10,13 +10,15 @@
 // All of the following methods use [NSCalendar currentCalendar] to perform
 // their calculations.
 
-- (NSDate *)cc_dateByMovingToBeginningOfDay;
-- (NSDate *)cc_dateByMovingToEndOfDay;
-- (NSDate *)cc_dateByMovingToFirstDayOfTheMonth;
-- (NSDate *)cc_dateByMovingToFirstDayOfThePreviousMonth;
-- (NSDate *)cc_dateByMovingToFirstDayOfTheFollowingMonth;
-- (NSDateComponents *)cc_componentsForMonthDayAndYear;
-- (NSUInteger)cc_weekday;
-- (NSUInteger)cc_numberOfDaysInMonth;
+- (NSDate *) cc_dateByMovingToBeginningOfDay;
+- (NSDate *) cc_dateByMovingToEndOfDay;
+- (NSDate *) cc_dateByMovingToFirstDayOfTheFollowingMonth;
+- (NSDate *) cc_dateByMovingToFirstDayOfTheMonth;
+- (NSDate *) cc_dateByMovingToFirstDayOfThePreviousMonth;
+
+- (NSDateComponents *) cc_componentsForMonthDayAndYear;
+
+- (NSUInteger) cc_numberOfDaysInMonth;
+- (NSUInteger) cc_weekday;
 
 @end
