@@ -41,7 +41,7 @@ typedef NS_OPTIONS(NSUInteger, KalTileViewState)
 
 @property (nonatomic) CGSize shadowOffset;
 
-- (BOOL) reversesShadowForState: (KalTileViewState) state;
+- (NSUInteger) reversesShadowForState: (KalTileViewState) state;
 
 - (UIColor *) textColorForState: (KalTileViewState) state;
 - (UIColor *) shadowColorForState: (KalTileViewState) state;
@@ -49,9 +49,9 @@ typedef NS_OPTIONS(NSUInteger, KalTileViewState)
 - (UIImage *) backgroundImageForState: (KalTileViewState) state;
 - (UIImage *) markerImageForState: (KalTileViewState) state;
 
-- (void) setBackgroundImage: (UIImage *) image forState: (KalTileViewState) state;    // an image that will be drawn at size {47, 45}
-- (void) setMarkerImage: (UIImage *) image forState: (KalTileViewState) state;        // an image that will be drawn at size {4,5}
-- (void) setReversesShadow: (BOOL) flag forState: (KalTileViewState) state; // NSInteger instead of BOOL, in order to comply with the UIAppearanceContainer constraints
+- (void) setBackgroundImage: (UIImage *) image forState: (KalTileViewState) state; // An image that will be drawn at size {47, 45}
+- (void) setMarkerImage: (UIImage *) image forState: (KalTileViewState) state; // An image that will be drawn at size {4, 5}
+- (void) setReversesShadow: (NSUInteger) flag forState: (KalTileViewState) state; // NSInteger instead of BOOL, in order to comply with the UIAppearanceContainer constraints.
 - (void) setShadowColor: (UIColor *) color forState: (KalTileViewState) state;
 - (void) setTextColor: (UIColor *) color forState: (KalTileViewState) state;
 

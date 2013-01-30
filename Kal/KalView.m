@@ -8,10 +8,22 @@
 #import "KalLogic.h"
 #import "KalPrivate.h"
 
+static const CGFloat KalViewHeaderHeight = 44.0;
+static const CGFloat KalViewMonthLabelHeight = 17.0;
+
+static NSDictionary *KalViewDefaultAppearance;
+
 @interface KalView ()
 
+@property (nonatomic) BOOL hasTitleLabelTextColor;
+@property (nonatomic) BOOL hasWeekdayLabelTextColor;
 @property (nonatomic, strong) KalLogic *logic;
 @property (nonatomic, strong) KalGridView *gridView;
+@property (nonatomic, strong) NSArray *weekdayLabels;
+@property (nonatomic, strong) NSMutableDictionary *appearanceStorage;
+@property (nonatomic, strong) UIButton *previousMonthButton;
+@property (nonatomic, strong) UIButton *nextMonthButton;
+@property (nonatomic, strong) UIImageView *backgroundView;
 @property (nonatomic, strong) UIImageView *shadowView;
 @property (nonatomic, strong) UILabel *headerTitleLabel;
 @property (nonatomic, strong) UITableView *tableView;
@@ -21,9 +33,6 @@
 - (void) setHeaderTitleText: (NSString *) text;
 
 @end
-
-static const CGFloat KalViewHeaderHeight = 44.0;
-static const CGFloat KalViewMonthLabelHeight = 17.0;
 
 @implementation KalView
 
@@ -64,7 +73,7 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	CGRect fullWidthAutomaticLayoutFrame = CGRectMake(0, 0, self.width, 0);
 	
 	// The tile grid (the calendar body)
-	self.gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic: self.logic];
+	self.gridView = [[KalGridView alloc] initWithFrame: fullWidthAutomaticLayoutFrame logic: self.logic];
 	self.gridView.delegate = self.delegate;
 	[self.gridView addObserver: self forKeyPath: @"frame" options: NSKeyValueObservingOptionNew context: NULL];
 	[contentView addSubview: self.gridView];
@@ -75,8 +84,8 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	[contentView addSubview: self.tableView];
 	
 	// Drop shadow below tile grid and over the list of events for the selected day
-	self.shadowView = [[UIImageView alloc] initWithFrame:fullWidthAutomaticLayoutFrame];
-	self.shadowView.image = [UIImage imageNamed:@"Kal.bundle/kal_grid_shadow.png"];
+	self.shadowView = [[UIImageView alloc] initWithFrame: fullWidthAutomaticLayoutFrame];
+	self.shadowView.image = self.gridDropShadowImage;
 	self.shadowView.height = self.shadowView.image.size.height;
 	[contentView addSubview: self.shadowView];
 	
@@ -91,11 +100,11 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	const CGFloat KalViewHeaderVerticalAdjust = 3;
 	
 	// Header background gradient
-	UIImageView *backgroundView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: @"Kal.bundle/kal_grid_background.png"]];
+	self.backgroundView = [[UIImageView alloc] initWithImage: self.gridBackgroundImage];
 	CGRect imageFrame = headerView.frame;
 	imageFrame.origin = CGPointZero;
-	backgroundView.frame = imageFrame;
-	[headerView addSubview: backgroundView];
+	self.backgroundView.frame = imageFrame;
+	[headerView addSubview: self.backgroundView];
 	
 	// Create the previous month button on the left side of the view
 	CGRect previousMonthButtonFrame = CGRectMake(self.left, KalViewHeaderVerticalAdjust, KalViewChangeMonthButtonWidth, KalViewChangeMonthButtonHeight);
@@ -105,8 +114,8 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	previousMonthButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	
 	[previousMonthButton addTarget: self action: @selector(showPreviousMonth) forControlEvents: UIControlEventTouchUpInside];
-	[previousMonthButton setImage: [UIImage imageNamed:@"Kal.bundle/kal_left_arrow.png"] forState:UIControlStateNormal];
 	[headerView addSubview: previousMonthButton];
+	self.previousMonthButton = previousMonthButton;
 	
 	// Draw the selected month name centered and at the top of the view
 	CGRect monthLabelFrame = CGRectMake(0.5 * (self.width - KalViewMonthLabelWidth), KalViewHeaderVerticalAdjust, KalViewMonthLabelWidth, KalViewMonthLabelHeight);
@@ -114,7 +123,7 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	self.headerTitleLabel.backgroundColor = [UIColor clearColor];
 	self.headerTitleLabel.font = [UIFont boldSystemFontOfSize:22.0];
 	self.headerTitleLabel.textAlignment = UITextAlignmentCenter;
-	self.headerTitleLabel.textColor = [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_header_text_fill.png"]];
+	self.headerTitleLabel.textColor = self.titleLabelTextColor;
 	self.headerTitleLabel.shadowColor = [UIColor whiteColor];
 	self.headerTitleLabel.shadowOffset = CGSizeMake(0, 1);
 	
@@ -129,9 +138,25 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	nextMonthButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	
 	[nextMonthButton addTarget: self action: @selector(showFollowingMonth) forControlEvents: UIControlEventTouchUpInside];
-	[nextMonthButton setImage: [UIImage imageNamed:@"Kal.bundle/kal_right_arrow.png"] forState: UIControlStateNormal];
 	[headerView addSubview: nextMonthButton];
+	self.nextMonthButton = nextMonthButton;
 	
+	NSMutableOrderedSet *monthButtonStates = [NSMutableOrderedSet orderedSet];
+	[monthButtonStates addObjectsFromArray: KalViewDefaultAppearance.allKeys];
+	if (self.appearanceStorage)
+		[monthButtonStates addObjectsFromArray: self.appearanceStorage.allKeys];
+
+	[monthButtonStates enumerateObjectsUsingBlock: ^(NSNumber *_state, NSUInteger idx, BOOL *stop) {
+		UIControlState state;
+		[_state getValue: &state];
+		
+		UIImage *leftArrowImage = [self leftArrowImageForState: state];
+		if (leftArrowImage) [previousMonthButton setImage: leftArrowImage forState: state];
+		
+		UIImage *rightArrowImage = [self rightArrowImageForState: state];
+		if (rightArrowImage) [nextMonthButton setImage: rightArrowImage forState: state];
+	}];
+
 	// Add column labels for each weekday (adjusting based on the current locale's first weekday)
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	dateFormatter.locale = [NSLocale currentLocale];
@@ -139,6 +164,7 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 	NSArray *fullWeekdayNames = dateFormatter.standaloneWeekdaySymbols;
 	NSUInteger firstWeekday = [[NSCalendar currentCalendar] firstWeekday];
 	NSUInteger i = firstWeekday - 1;
+	NSMutableArray *weekdayLabels = [NSMutableArray arrayWithCapacity: 7];
 	for (CGFloat xOffset = 0; xOffset < headerView.width; xOffset += 46.0, i = (i + 1) % 7)
 	{
 		CGRect weekdayFrame = CGRectMake(xOffset, 30, 46.0, KalViewHeaderHeight - 29.0);
@@ -146,14 +172,16 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 		weekdayLabel.backgroundColor = [UIColor clearColor];
 		weekdayLabel.font = [UIFont boldSystemFontOfSize:10];
 		weekdayLabel.textAlignment = UITextAlignmentCenter;
-		weekdayLabel.textColor = [UIColor colorWithWhite: 0.298 alpha: 1];
+		weekdayLabel.textColor = self.weekdayLabelTextColor;
 		weekdayLabel.shadowColor = [UIColor whiteColor];
 		weekdayLabel.shadowOffset = CGSizeMake(0, 1.0);
 		weekdayLabel.text = weekdayNames[i];
 		
 		[weekdayLabel setAccessibilityLabel: fullWeekdayNames[i]];
 		[headerView addSubview: weekdayLabel];
+		[weekdayLabels addObject: weekdayLabel];
 	}
+	self.weekdayLabels = weekdayLabels;
 }
 - (void) dealloc
 {
@@ -163,6 +191,18 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 - (void) markTilesForDates: (NSArray *) dates
 {
 	[self.gridView markTilesForDates: dates];
+}
++ (void) initialize
+{
+	if (self == [KalView class])
+	{
+		KalViewDefaultAppearance = @{
+			@(UIControlStateNormal): @{
+				@"leftArrowImage": [UIImage imageNamed: @"Kal.bundle/kal_left_arrow"],
+				@"rightArrowImage": [UIImage imageNamed: @"Kal.bundle/kal_right_arrow"]
+			}
+		};
+	}
 }
 - (void) observeValueForKeyPath: (NSString *) keyPath ofObject: (id) object change: (NSDictionary *) change context: (void *) context
 {
@@ -241,6 +281,128 @@ static const CGFloat KalViewMonthLabelHeight = 17.0;
 - (void) slide: (KalGridViewSlideType) slideType
 {
 	[self.gridView slide: slideType];
+}
+
+#pragma mark - Appearance Customization
+
+- (id) valueForAppearanceKey: (NSString *) key forState: (UIControlState) state
+{
+	// Returns the attribtue with the highest number of common bits with `state`.
+	__block id bestValue = nil;
+	__block NSInteger maximumNumberOfBits = -1;
+	
+	void (^block)(id, id, BOOL*) = ^(NSNumber *_storedState, NSDictionary *stateStorage, BOOL *stop) {
+		if (!stateStorage[key])
+			return;
+		
+		UIControlState storedState;
+		[_storedState getValue: &storedState];
+		
+		if ((storedState & state) != storedState)
+			return;
+		
+		NSInteger numberOfBits;
+		for (numberOfBits = 0; storedState; numberOfBits++)
+			storedState &= storedState - 1;
+		
+		if (numberOfBits <= maximumNumberOfBits)
+			return;
+		
+		// Best resule so far
+		maximumNumberOfBits = numberOfBits;
+		bestValue = stateStorage[key];
+	};
+	
+	if (self.appearanceStorage)
+		[self.appearanceStorage enumerateKeysAndObjectsUsingBlock: block];
+	
+	if (!bestValue)
+		[KalViewDefaultAppearance enumerateKeysAndObjectsUsingBlock: block];
+	
+	if (bestValue == [NSNull null])
+		return nil;
+	
+	return bestValue;
+}
+
+- (UIColor *) titleLabelTextColor
+{
+	if (self.hasTitleLabelTextColor)
+		return self.headerTitleLabel.textColor;
+	
+	return [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_header_text_fill.png"]];
+}
+- (UIColor *) weekdayLabelTextColor
+{
+	if (self.hasWeekdayLabelTextColor)
+		return [self.weekdayLabels[0] textColor];
+	
+	return [UIColor colorWithWhite: 0.298 alpha: 1];
+}
+
+- (UIImage *) gridBackgroundImage
+{
+	return self.backgroundView.image ?: [UIImage imageNamed: @"Kal.bundle/kal_grid_background.png"];
+}
+- (UIImage *) gridDropShadowImage
+{
+	return self.shadowView.image ?: [UIImage imageNamed: @"Kal.bundle/kal_grid_shadow.png"];
+}
+- (UIImage *) leftArrowImageForState: (UIControlState) state
+{
+	return [self valueForAppearanceKey: @"leftArrowImage" forState: state];
+}
+- (UIImage *) rightArrowImageForState: (UIControlState) state
+{
+	return [self valueForAppearanceKey: @"rightArrowImage" forState: state];
+}
+
+- (void) setGridBackgroundImage: (UIImage *) gridBackgroundImage
+{
+	self.backgroundView.image = gridBackgroundImage;
+}
+- (void) setGridDropShadowImage: (UIImage *) gridDropShadowImage
+{
+	self.shadowView.image = gridDropShadowImage;
+}
+- (void) setLeftArrowImage: (UIImage *) image forState: (UIControlState) state
+{
+	[self setValue: image forAppearanceKey: @"leftArrowImage" forState: state];
+	[self.previousMonthButton setImage: image forState: state];
+}
+- (void) setRightArrowImage: (UIImage *) image forState: (UIControlState) state
+{
+	[self setValue: image forAppearanceKey: @"rightArrowImage" forState: state];
+	[self.nextMonthButton setImage: image forState: state];
+}
+- (void) setTitleLabelTextColor: (UIColor *) titleLabelTextColor
+{
+	self.hasTitleLabelTextColor = YES;
+	self.headerTitleLabel.textColor = titleLabelTextColor;
+}
+- (void) setValue: (id) value forAppearanceKey: (NSString *) key forState: (UIControlState) state
+{
+	if (!self.appearanceStorage)
+		self.appearanceStorage = [NSMutableDictionary dictionary];
+	
+	id stateKey = @(state);
+	NSMutableDictionary *stateStorage = self.appearanceStorage[stateKey];
+	
+	if (!stateStorage)
+	{
+		stateStorage = [NSMutableDictionary dictionary];
+		self.appearanceStorage[stateKey] = stateStorage;
+	}
+	
+	if (value)
+		stateStorage[key] = value;
+	else
+		[stateStorage removeObjectForKey: key];
+}
+- (void) setWeekdayLabelTextColor: (UIColor *) color
+{
+	self.hasWeekdayLabelTextColor = YES;
+	[self.weekdayLabels makeObjectsPerformSelector: @selector(setTextColor:) withObject: color];
 }
 
 @end

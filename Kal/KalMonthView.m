@@ -58,7 +58,7 @@ static NSDateFormatter *KalMonthViewTileAccessibilityFormatter;
 
 - (void) drawRect: (CGRect) rect
 {
-	CGContextDrawTiledImage(UIGraphicsGetCurrentContext(), (CGRect) { CGPointZero, KalGridViewTileSize }, [UIImage imageNamed:@"Kal.bundle/kal_tile.png"].CGImage);
+	CGContextDrawTiledImage(UIGraphicsGetCurrentContext(), (CGRect) { CGPointZero, KalGridViewTileSize }, [UIImage imageNamed: @"Kal.bundle/kal_tile.png"].CGImage);
 }
 - (void) markTilesForDates: (NSArray *) dates
 {

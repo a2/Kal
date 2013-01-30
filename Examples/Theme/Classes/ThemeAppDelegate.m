@@ -6,6 +6,7 @@
 #import "ThemeAppDelegate.h"
 #import "EventKitDataSource.h"
 #import "Kal.h"
+#import "KalTileView.h"
 
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
@@ -14,8 +15,24 @@
 
 @synthesize window = _window;
 
-- (BOOL) application: (UIApplication *) application didFinishLaunchingWithOptions: (NSDictionary *)launchOptions
+- (BOOL) application: (UIApplication *) application didFinishLaunchingWithOptions: (NSDictionary *) launchOptions
 {
+	KalTileView *tileView = [KalTileView appearance];
+	[tileView setBackgroundImage: [UIImage imageNamed: @"green"] forState: KalTileViewStateNormal];
+	[tileView setBackgroundImage: [UIImage imageNamed: @"dark-green"] forState: KalTileViewStateSelected];
+	[tileView setBackgroundImage: [UIImage imageNamed: @"light-green"] forState: KalTileViewStateAdjacent];
+	[tileView setTextColor: [UIColor blackColor] forState: KalTileViewStateNormal];
+	[tileView setTextColor: [UIColor greenColor] forState: KalTileViewStateToday];
+	[tileView setTextColor: [UIColor whiteColor] forState: KalTileViewStateSelected];
+	[tileView setTextColor: [UIColor magentaColor] forState: KalTileViewStateSelected | KalTileViewStateToday];
+	
+	KalView *view = [KalView appearance];
+	[view setGridDropShadowImage: [UIImage imageNamed: @"grid-shadow"]];
+	[view setLeftArrowImage: [UIImage imageNamed: @"left-arrow"] forState: UIControlStateNormal];
+	[view setRightArrowImage: [UIImage imageNamed: @"right-arrow"] forState: UIControlStateNormal];
+	[view setTitleLabelTextColor: [UIColor redColor]];
+	[view setWeekdayLabelTextColor: [UIColor purpleColor]];
+	
 	/*
 	 *    Kal Initialization
 	 *
@@ -30,7 +47,7 @@
 	 *    Kal Configuration
 	 *
 	 */
-	self.kal.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle: @"Today" style:UIBarButtonItemStyleBordered target: self action: @selector(showAndSelectToday)];
+	self.kal.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle: @"Today" style: UIBarButtonItemStyleBordered target: self action: @selector(showAndSelectToday)];
 	self.kal.delegate = self;
 	
 	self.dataSource = [[EventKitDataSource alloc] init];
@@ -39,7 +56,7 @@
 	// Setup the navigation stack and display it.
 	self.navigationController = [[UINavigationController alloc] initWithRootViewController: self.kal];
 	self.window.rootViewController = self.navigationController;
-  
+	
 	[self.window addSubview: self.navigationController.view];
 	[self.window makeKeyAndVisible];
 	
@@ -49,14 +66,14 @@
 // Action handler for the navigation bar's right bar button item.
 - (void)showAndSelectToday
 {
-	[self.kal showAndSelectDate:[NSDate date]];
+	[self.kal showAndSelectDate: [NSDate date]];
 }
 
 #pragma mark UITableViewDelegate protocol conformance
 
 - (void) tableView: (UITableView *) tableView didSelectRowAtIndexPath: (NSIndexPath *) indexPath
 {
-  // Display a details screen for the selected event/row.
+	// Display a details screen for the selected event/row.
 	EKEventViewController *vc = [[EKEventViewController alloc] init];
 	vc.allowsEditing = NO;
 	vc.event = [self.dataSource eventAtIndexPath: indexPath];

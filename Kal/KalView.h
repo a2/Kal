@@ -52,6 +52,19 @@
 - (void) selectDate: (KalDate *) date;
 - (void) slide: (KalGridViewSlideType) slideType; // This method is exposed for the delegate. It should be called *after* the KalLogic has moved to the month specified by the user.
 
+#pragma mark - Appearance Customization
+
+@property (nonatomic, strong) UIImage *gridBackgroundImage;
+@property (nonatomic, strong) UIImage *gridDropShadowImage;
+@property (nonatomic, strong) UIColor *titleLabelTextColor;
+@property (nonatomic, strong) UIColor *weekdayLabelTextColor;
+
+- (UIImage *) leftArrowImageForState: (UIControlState) state;
+- (UIImage *) rightArrowImageForState: (UIControlState) state;
+
+- (void) setLeftArrowImage: (UIImage *) image forState: (UIControlState) state;
+- (void) setRightArrowImage: (UIImage *) image forState: (UIControlState) state;
+
 @end
 
 @protocol KalViewDelegate <NSObject>

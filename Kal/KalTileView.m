@@ -44,45 +44,6 @@ static NSDictionary *KalTileViewDefaultAppearance;
 	
 	return self;
 }
-- (id) valueForAppearanceKey: (NSString *) key forState: (KalTileViewState) state
-{
-	// Returns the attribtue with the highest number of common bits with `state`.
-	__block id bestValue = nil;
-	__block NSInteger maximumNumberOfBits = -1;
-	
-	void (^block)(id, id, BOOL*) = ^(NSNumber *_storedState, NSDictionary *stateStorage, BOOL *stop) {
-		if (!stateStorage[key])
-			return;
-		
-		KalTileViewState storedState;
-		[_storedState getValue: &storedState];
-		
-		if ((storedState & state) != storedState)
-			return;
-		
-		NSInteger numberOfBits;
-		for (numberOfBits = 0; storedState; numberOfBits++)
-			storedState &= storedState - 1;
-		
-		if (numberOfBits <= maximumNumberOfBits)
-			return;
-		
-		// Best resule so far
-		maximumNumberOfBits = numberOfBits;
-		bestValue = stateStorage[key];
-	};
-	
-	if (self.appearanceStorage)
-		[self.appearanceStorage enumerateKeysAndObjectsUsingBlock: block];
-
-	if (!bestValue)
-		[KalTileViewDefaultAppearance enumerateKeysAndObjectsUsingBlock: block];
-	
-	if (bestValue == [NSNull null])
-		return nil;
-	
-	return bestValue;
-}
 
 - (KalTileViewState) state
 {
@@ -200,25 +161,6 @@ static NSDictionary *KalTileViewDefaultAppearance;
 	self.shadowOffset = CGSizeMake(0, 1);
 	self.type = KalTileViewTypeRegular;
 }
-- (void) setValue: (id) value forAppearanceKey: (NSString *) key forState: (KalTileViewState) state
-{
-	if (!self.appearanceStorage)
-		self.appearanceStorage = [NSMutableDictionary dictionary];
-	
-	id stateKey = @(state);
-	NSMutableDictionary *stateStorage = self.appearanceStorage[stateKey];
-	
-	if (!stateStorage)
-	{
-		stateStorage = [NSMutableDictionary dictionary];
-		self.appearanceStorage[stateKey] = stateStorage;
-	}
-	
-	if (value)
-		stateStorage[key] = value;
-	else
-		[stateStorage removeObjectForKey: key];
-}
 - (void) setDate: (KalDate *) aDate
 {
 	if (_date == aDate)
@@ -235,11 +177,19 @@ static NSDictionary *KalTileViewDefaultAppearance;
 	_highlighted = highlighted;
 	[self setNeedsDisplay];
 }
+- (void) setMarked: (BOOL) marked
+{
+	if (_marked == marked)
+		return;
+  
+	_marked = marked;
+	[self setNeedsDisplay];
+}
 - (void) setSelected:(BOOL)selected
 {
 	if (_selected == selected)
 		return;
-
+	
 	// Workaround since I cannot draw outside of the frame in drawRect:
 	if (!self.isToday)
 	{
@@ -258,16 +208,8 @@ static NSDictionary *KalTileViewDefaultAppearance;
 		}
 		self.frame = rect;
 	}
-  
+	
 	_selected = selected;
-	[self setNeedsDisplay];
-}
-- (void) setMarked: (BOOL) marked
-{
-	if (_marked == marked)
-		return;
-  
-	_marked = marked;
 	[self setNeedsDisplay];
 }
 - (void) setType: (KalTileViewType) tileType
@@ -297,7 +239,47 @@ static NSDictionary *KalTileViewDefaultAppearance;
 
 #pragma mark - Appearance Customization
 
-- (BOOL) reversesShadowForState: (KalTileViewState) state
+- (id) valueForAppearanceKey: (NSString *) key forState: (KalTileViewState) state
+{
+	// Returns the attribtue with the highest number of common bits with `state`.
+	__block id bestValue = nil;
+	__block NSInteger maximumNumberOfBits = -1;
+	
+	void (^block)(id, id, BOOL*) = ^(NSNumber *_storedState, NSDictionary *stateStorage, BOOL *stop) {
+		if (!stateStorage[key])
+			return;
+		
+		KalTileViewState storedState;
+		[_storedState getValue: &storedState];
+		
+		if ((storedState & state) != storedState)
+			return;
+		
+		NSInteger numberOfBits;
+		for (numberOfBits = 0; storedState; numberOfBits++)
+			storedState &= storedState - 1;
+		
+		if (numberOfBits <= maximumNumberOfBits)
+			return;
+		
+		// Best resule so far
+		maximumNumberOfBits = numberOfBits;
+		bestValue = stateStorage[key];
+	};
+	
+	if (self.appearanceStorage)
+		[self.appearanceStorage enumerateKeysAndObjectsUsingBlock: block];
+	
+	if (!bestValue)
+		[KalTileViewDefaultAppearance enumerateKeysAndObjectsUsingBlock: block];
+	
+	if (bestValue == [NSNull null])
+		return nil;
+	
+	return bestValue;
+}
+
+- (NSUInteger) reversesShadowForState: (KalTileViewState) state
 {
 	return [[self valueForAppearanceKey: @"reversesShadow" forState: state] boolValue];
 }
@@ -328,7 +310,7 @@ static NSDictionary *KalTileViewDefaultAppearance;
 {
 	[self setValue: image forAppearanceKey: @"markerImage" forState: state];
 }
-- (void) setReversesShadow: (BOOL) flag forState: (KalTileViewState) state
+- (void) setReversesShadow: (NSUInteger) flag forState: (KalTileViewState) state
 {
 	[self setValue: @(flag) forAppearanceKey: @"reversesShadow" forState: state];
 }
@@ -339,6 +321,25 @@ static NSDictionary *KalTileViewDefaultAppearance;
 - (void) setTextColor: (UIColor *) color forState: (KalTileViewState) state
 {
 	[self setValue: color forAppearanceKey: @"textColor" forState: state];
+}
+- (void) setValue: (id) value forAppearanceKey: (NSString *) key forState: (KalTileViewState) state
+{
+	if (!self.appearanceStorage)
+		self.appearanceStorage = [NSMutableDictionary dictionary];
+	
+	id stateKey = @(state);
+	NSMutableDictionary *stateStorage = self.appearanceStorage[stateKey];
+	
+	if (!stateStorage)
+	{
+		stateStorage = [NSMutableDictionary dictionary];
+		self.appearanceStorage[stateKey] = stateStorage;
+	}
+	
+	if (value)
+		stateStorage[key] = value;
+	else
+		[stateStorage removeObjectForKey: key];
 }
 
 @end
