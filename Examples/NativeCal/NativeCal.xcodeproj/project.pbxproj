@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0039E87D16B8EC8D0040417E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0039E87C16B8EC8D0040417E /* Default-568h@2x.png */; };
+		0039E87F16B8EC970040417E /* libKal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0039E87616B8EC0D0040417E /* libKal.a */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
-		533B295F11E4A8E100B3CC07 /* libKal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 533B295B11E4A89500B3CC07 /* libKal.a */; };
 		533B296811E4A90D00B3CC07 /* Kal.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 533B296711E4A90D00B3CC07 /* Kal.bundle */; };
 		533B296F11E4A9AA00B3CC07 /* NativeCalAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 533B296C11E4A9AA00B3CC07 /* NativeCalAppDelegate.m */; };
 		533B297011E4A9AA00B3CC07 /* EventKitDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 533B296E11E4A9AA00B3CC07 /* EventKitDataSource.m */; };
@@ -21,23 +22,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		533B295A11E4A89500B3CC07 /* PBXContainerItemProxy */ = {
+		0039E87516B8EC0D0040417E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 533B295311E4A89500B3CC07 /* Kal.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = D2AAC07E0554694100DB518D;
 			remoteInfo = Kal;
 		};
-		533B295D11E4A8BA00B3CC07 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 533B295311E4A89500B3CC07 /* Kal.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = Kal;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0039E87C16B8EC8D0040417E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* NativeCal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NativeCal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -45,8 +40,8 @@
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* NativeCal_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeCal_Prefix.pch; sourceTree = "<group>"; };
-		533B295311E4A89500B3CC07 /* Kal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kal.xcodeproj; path = ../../src/Kal.xcodeproj; sourceTree = SOURCE_ROOT; };
-		533B296711E4A90D00B3CC07 /* Kal.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Kal.bundle; path = ../../src/Kal.bundle; sourceTree = SOURCE_ROOT; };
+		533B295311E4A89500B3CC07 /* Kal.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Kal.xcodeproj; path = ../../Kal/Kal.xcodeproj; sourceTree = SOURCE_ROOT; };
+		533B296711E4A90D00B3CC07 /* Kal.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Kal.bundle; path = ../../Kal/Kal.bundle; sourceTree = SOURCE_ROOT; };
 		533B296B11E4A9AA00B3CC07 /* NativeCalAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeCalAppDelegate.h; sourceTree = "<group>"; };
 		533B296C11E4A9AA00B3CC07 /* NativeCalAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeCalAppDelegate.m; sourceTree = "<group>"; };
 		533B296D11E4A9AA00B3CC07 /* EventKitDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventKitDataSource.h; sourceTree = "<group>"; };
@@ -61,10 +56,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0039E87F16B8EC970040417E /* libKal.a in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
-				533B295F11E4A8E100B3CC07 /* libKal.a in Frameworks */,
 				533B297F11E4B26E00B3CC07 /* EventKit.framework in Frameworks */,
 				533B298111E4B27600B3CC07 /* EventKitUI.framework in Frameworks */,
 			);
@@ -73,6 +68,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0039E87216B8EC0D0040417E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0039E87616B8EC0D0040417E /* libKal.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -117,6 +120,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0039E87C16B8EC8D0040417E /* Default-568h@2x.png */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* NativeCal-Info.plist */,
 			);
@@ -133,14 +137,6 @@
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		533B295411E4A89500B3CC07 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				533B295B11E4A89500B3CC07 /* libKal.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		533B297411E4ABD100B3CC07 /* Kal Library */ = {
@@ -166,7 +162,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				533B295E11E4A8BA00B3CC07 /* PBXTargetDependency */,
 			);
 			name = NativeCal;
 			productName = NativeCal;
@@ -192,7 +187,7 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 533B295411E4A89500B3CC07 /* Products */;
+					ProductGroup = 0039E87216B8EC0D0040417E /* Products */;
 					ProjectRef = 533B295311E4A89500B3CC07 /* Kal.xcodeproj */;
 				},
 			);
@@ -204,11 +199,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		533B295B11E4A89500B3CC07 /* libKal.a */ = {
+		0039E87616B8EC0D0040417E /* libKal.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libKal.a;
-			remoteRef = 533B295A11E4A89500B3CC07 /* PBXContainerItemProxy */;
+			remoteRef = 0039E87516B8EC0D0040417E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -220,6 +215,7 @@
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				533B296811E4A90D00B3CC07 /* Kal.bundle in Resources */,
+				0039E87D16B8EC8D0040417E /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,14 +233,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		533B295E11E4A8BA00B3CC07 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Kal;
-			targetProxy = 533B295D11E4A8BA00B3CC07 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
@@ -282,7 +270,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../src;
+				HEADER_SEARCH_PATHS = ../../Kal;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
@@ -298,7 +286,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = ../../src;
+				HEADER_SEARCH_PATHS = ../../Kal;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-all_load";
 				PREBINDING = NO;
