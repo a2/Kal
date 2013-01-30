@@ -105,13 +105,13 @@ static NSDateFormatter *KalMonthViewTileAccessibilityFormatter;
 		}
 	}
 	
-	self.numberOfWeeks = ceilf(tileCount / 7.f);
+	self.numberOfWeeks = ceilf(tileCount / 7.0);
 	[self sizeToFit];
 	[self setNeedsDisplay];
 }
 - (void) sizeToFit
 {
-	self.height = 1.f + KalGridViewTileSize.height * self.numberOfWeeks;
+	self.height = 1.0 + KalGridViewTileSize.height * self.numberOfWeeks;
 }
 
 

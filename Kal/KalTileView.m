@@ -8,10 +8,12 @@
 #import "KalTileView.h"
 
 extern const CGSize KalGridViewTileSize;
+static NSDictionary *KalTileViewDefaultAppearance;
 
 @interface KalTileView ()
 
 @property (nonatomic) CGPoint origin;
+@property (nonatomic, strong) NSMutableDictionary *appearanceStorage;
 
 @end
 
@@ -42,70 +44,102 @@ extern const CGSize KalGridViewTileSize;
 	
 	return self;
 }
+- (id) valueForAppearanceKey: (NSString *) key forState: (KalTileViewState) state
+{
+	// Returns the attribtue with the highest number of common bits with `state`.
+	__block id bestValue = nil;
+	__block NSInteger maximumNumberOfBits = -1;
+	
+	void (^block)(id, id, BOOL*) = ^(NSNumber *_storedState, NSDictionary *stateStorage, BOOL *stop) {
+		if (!stateStorage[key])
+			return;
+		
+		KalTileViewState storedState;
+		[_storedState getValue: &storedState];
+		
+		if ((storedState & state) != storedState)
+			return;
+		
+		NSInteger numberOfBits;
+		for (numberOfBits = 0; storedState; numberOfBits++)
+			storedState &= storedState - 1;
+		
+		if (numberOfBits <= maximumNumberOfBits)
+			return;
+		
+		// Best resule so far
+		maximumNumberOfBits = numberOfBits;
+		bestValue = stateStorage[key];
+	};
+	
+	if (self.appearanceStorage)
+		[self.appearanceStorage enumerateKeysAndObjectsUsingBlock: block];
+
+	if (!bestValue)
+		[KalTileViewDefaultAppearance enumerateKeysAndObjectsUsingBlock: block];
+	
+	if (bestValue == [NSNull null])
+		return nil;
+	
+	return bestValue;
+}
+
+- (KalTileViewState) state
+{
+	KalTileViewState state = 0;
+	
+	if (self.belongsToAdjacentMonth)
+		state |= KalTileViewStateAdjacent;
+	
+	if (self.isToday)
+		state |= KalTileViewStateToday;
+	
+	if (self.selected)
+		state |= KalTileViewStateSelected;
+	
+	if (self.highlighted)
+		state |= KalTileViewStateHighlighted;
+	
+	if (self.marked)
+		state |= KalTileViewStateMarked;
+	
+	return state;
+};
 
 - (void) drawRect: (CGRect) rect
 {
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
-	CGFloat fontSize = 24.f;
+	CGFloat fontSize = 24.0;
 	UIFont *font = [UIFont boldSystemFontOfSize:fontSize];
-	UIColor *shadowColor = nil;
-	UIColor *textColor = nil;
-	UIImage *markerImage = nil;
 	CGContextSelectFont(ctx, [font.fontName cStringUsingEncoding:NSUTF8StringEncoding], fontSize, kCGEncodingMacRoman);
 
 	CGContextTranslateCTM(ctx, 0, KalGridViewTileSize.height);
 	CGContextScaleCTM(ctx, 1, -1);
 
-	if (self.isToday)
-	{
-		NSString *imageName;
-		if (self.selected)
-			imageName = @"Kal.bundle/kal_tile_today_selected.png";
-		else
-			imageName = @"Kal.bundle/kal_tile_today.png";
-		
-		[[[UIImage imageNamed: imageName] resizableImageWithCapInsets: UIEdgeInsetsMake(0, 6, 0, 6)] drawInRect: CGRectMake(0, -1, KalGridViewTileSize.width + 1, KalGridViewTileSize.height + 1)];
-
-		textColor = [UIColor whiteColor];
-		shadowColor = [UIColor blackColor];
-		markerImage = [UIImage imageNamed: @"Kal.bundle/kal_marker_today.png"];
-	}
-	else if (self.selected)
-	{
-		[[[UIImage imageNamed: @"Kal.bundle/kal_tile_selected.png"] resizableImageWithCapInsets: UIEdgeInsetsMake(0, 1, 0, 1)] drawInRect:CGRectMake(0, -1, KalGridViewTileSize.width+1, KalGridViewTileSize.height+1)];
-		
-		textColor = [UIColor whiteColor];
-		shadowColor = [UIColor blackColor];
-		markerImage = [UIImage imageNamed: @"Kal.bundle/kal_marker_selected.png"];
-	}
-	else if (self.belongsToAdjacentMonth)
-	{
-		textColor = [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_tile_dim_text_fill.png"]];
-		shadowColor = nil;
-		markerImage = [UIImage imageNamed: @"Kal.bundle/kal_marker_dim.png"];
-	}
-	else
-	{
-		textColor = [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_tile_text_fill.png"]];
-		shadowColor = [UIColor whiteColor];
-		markerImage = [UIImage imageNamed: @"Kal.bundle/kal_marker.png"];
-	}
-
+	KalTileViewState state = self.state;
+	UIColor *textColor = [self textColorForState: state];
+	UIColor *shadowColor = [self shadowColorForState: state];
+	UIImage *backgroundImage = [self backgroundImageForState: state];
+	UIImage *markerImage = [self markerImageForState: state];
+	
+	[backgroundImage drawInRect: CGRectMake(0, -1, KalGridViewTileSize.width + 1, KalGridViewTileSize.height + 1)];
+	
 	if (self.marked)
-		[markerImage drawInRect:CGRectMake(21.f, 5.f, 4.f, 5.f)];
+		[markerImage drawInRect: CGRectMake(21.0, 5.0, 4.0, 5.0)];
 
-	NSUInteger n = self.date.day;
+	NSInteger n = self.date.day;
 	NSString *dayText = [NSString stringWithFormat: @"%lu", (unsigned long) n];
 	const char *day = [dayText cStringUsingEncoding: NSUTF8StringEncoding];
 	CGSize textSize = [dayText sizeWithFont: font];
 	
-	CGFloat textX = roundf(0.5f * (KalGridViewTileSize.width - textSize.width));
-	CGFloat textY = 6.f + roundf(0.5f * (KalGridViewTileSize.height - textSize.height));
+	CGFloat textX = roundf(0.5 * (KalGridViewTileSize.width - textSize.width));
+	CGFloat textY = 6.0 + roundf(0.5 * (KalGridViewTileSize.height - textSize.height));
 	if (shadowColor)
 	{
 		[shadowColor setFill];
-		CGContextShowTextAtPoint(ctx, textX, textY, day, n >= 10 ? 2 : 1);
-		textY += 1.f;
+		NSInteger sign = [self reversesShadowForState: state] ? -1 : 1;
+		CGContextShowTextAtPoint(ctx, textX + self.shadowOffset.width, textY - sign * self.shadowOffset.height, day, n >= 10 ? 2 : 1);
+//		textY += 1.0;
 	}
 	
 	[textColor setFill];
@@ -113,8 +147,42 @@ extern const CGSize KalGridViewTileSize;
 
 	if (self.highlighted)
 	{
-		[[UIColor colorWithWhite: 0.25f alpha: 0.3f] setFill];
+		[[UIColor colorWithWhite: 0.25 alpha: 0.3] setFill];
 		CGContextFillRect(ctx, CGRectMake(0, 0, KalGridViewTileSize.width, KalGridViewTileSize.height));
+	}
+}
++ (void) initialize
+{
+	if (self == [KalTileView class])
+	{
+		KalTileViewDefaultAppearance = @{
+			@(KalTileViewStateAdjacent): @{
+				@"markerImage": [UIImage imageNamed: @"Kal.bundle/kal_marker_dim.png"],
+				@"shadowColor": [NSNull null],
+				@"textColor": [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_tile_dim_text_fill.png"]]
+			},
+			@(KalTileViewStateNormal): @{
+				@"markerImage": [UIImage imageNamed: @"Kal.bundle/kal_marker.png"],
+				@"shadowColor": [UIColor whiteColor],
+				@"textColor": [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_tile_text_fill.png"]]
+			},
+			@(KalTileViewStateSelected): @{
+				@"backgroundImage": [[UIImage imageNamed: @"Kal.bundle/kal_tile_selected.png"] resizableImageWithCapInsets: UIEdgeInsetsMake(0, 1, 0, 1)],
+				@"markerImage": [UIImage imageNamed: @"Kal.bundle/kal_marker_selected.png"],
+				@"shadowColor": [UIColor blackColor],
+				@"textColor": [UIColor whiteColor]
+			},
+			@(KalTileViewStateToday): @{
+				@"backgroundImage": [[UIImage imageNamed: @"Kal.bundle/kal_tile_today.png"] resizableImageWithCapInsets: UIEdgeInsetsMake(0, 6, 0, 6)],
+				@"markerImage": [UIImage imageNamed: @"Kal.bundle/kal_marker_today.png"],
+				@"shadowColor": [UIColor blackColor],
+				@"textColor": [UIColor whiteColor]
+			},
+			@(KalTileViewStateToday | KalTileViewStateSelected): @{
+				@"backgroundImage": [[UIImage imageNamed: @"Kal.bundle/kal_tile_today_selected.png"] resizableImageWithCapInsets: UIEdgeInsetsMake(0, 6, 0, 6)],
+				@"textColor": [UIColor whiteColor]
+			}
+		};
 	}
 }
 - (void) resetState
@@ -126,10 +194,30 @@ extern const CGSize KalGridViewTileSize;
 	self.frame = frame;
   
 	self.date = nil;
-	self.type = KalTileViewTypeRegular;
 	self.highlighted = NO;
-	self.selected = NO;
 	self.marked = NO;
+	self.selected = NO;
+	self.shadowOffset = CGSizeMake(0, 1);
+	self.type = KalTileViewTypeRegular;
+}
+- (void) setValue: (id) value forAppearanceKey: (NSString *) key forState: (KalTileViewState) state
+{
+	if (!self.appearanceStorage)
+		self.appearanceStorage = [NSMutableDictionary dictionary];
+	
+	id stateKey = @(state);
+	NSMutableDictionary *stateStorage = self.appearanceStorage[stateKey];
+	
+	if (!stateStorage)
+	{
+		stateStorage = [NSMutableDictionary dictionary];
+		self.appearanceStorage[stateKey] = stateStorage;
+	}
+	
+	if (value)
+		stateStorage[key] = value;
+	else
+		[stateStorage removeObjectForKey: key];
 }
 - (void) setDate: (KalDate *) aDate
 {
@@ -205,6 +293,52 @@ extern const CGSize KalGridViewTileSize;
   
 	_type = tileType;
 	[self setNeedsDisplay];
+}
+
+#pragma mark - Appearance Customization
+
+- (BOOL) reversesShadowForState: (KalTileViewState) state
+{
+	return [[self valueForAppearanceKey: @"reversesShadow" forState: state] boolValue];
+}
+
+- (UIColor *) textColorForState: (KalTileViewState) state
+{
+	return [self valueForAppearanceKey: @"textColor" forState: state];
+}
+- (UIColor *) shadowColorForState: (KalTileViewState) state
+{
+	return [self valueForAppearanceKey: @"shadowColor" forState: state];
+}
+
+- (UIImage *) backgroundImageForState: (KalTileViewState) state
+{
+	return [self valueForAppearanceKey: @"backgroundImage" forState: state];
+}
+- (UIImage *) markerImageForState: (KalTileViewState) state
+{
+	return [self valueForAppearanceKey: @"markerImage" forState: state];
+}
+
+- (void) setBackgroundImage: (UIImage *) image forState: (KalTileViewState) state
+{
+	[self setValue: image forAppearanceKey: @"backgroundImage" forState: state];
+}
+- (void) setMarkerImage: (UIImage *) image forState: (KalTileViewState) state
+{
+	[self setValue: image forAppearanceKey: @"markerImage" forState: state];
+}
+- (void) setReversesShadow: (BOOL) flag forState: (KalTileViewState) state
+{
+	[self setValue: @(flag) forAppearanceKey: @"reversesShadow" forState: state];
+}
+- (void) setShadowColor: (UIColor *) color forState: (KalTileViewState) state
+{
+	[self setValue: color forAppearanceKey: @"shadowColor" forState: state];
+}
+- (void) setTextColor: (UIColor *) color forState: (KalTileViewState) state
+{
+	[self setValue: color forAppearanceKey: @"textColor" forState: state];
 }
 
 @end

@@ -13,7 +13,7 @@
 #import "KalTileView.h"
 #import "KalView.h"
 
-const CGSize KalGridViewTileSize = { 46.f, 44.f };
+const CGSize KalGridViewTileSize = { 46.0, 44.0 };
 static NSString *const KalGridViewSlideAnimationID = @"KalSwitchMonths";
 
 @interface KalGridView ()
@@ -65,11 +65,11 @@ static NSString *const KalGridViewSlideAnimationID = @"KalSwitchMonths";
 - (void) drawRect: (CGRect) rect
 {
 	[[UIImage imageNamed:@"Kal.bundle/kal_grid_background.png"] drawInRect: rect];
-	[[UIColor colorWithRed: 0.63f green: 0.65f blue: 0.68f alpha: 1.f] setFill];
+	[[UIColor colorWithRed: 0.63 green: 0.65 blue: 0.68 alpha: 1.0] setFill];
 	
 	CGRect line;
-	line.origin = CGPointMake(0.f, self.height - 1.f);
-	line.size = CGSizeMake(self.width, 1.f);
+	line.origin = CGPointMake(0, self.height - 1.0);
+	line.size = CGSizeMake(self.width, 1.0);
 	UIRectFill(line);
 }
 - (void) sizeToFit
@@ -204,7 +204,7 @@ static NSString *const KalGridViewSlideAnimationID = @"KalSwitchMonths";
 	}
 	else
 	{
-		self.backMonthView.top = 0.f;
+		self.backMonthView.top = 0;
 	}
   
 	// trigger the slide animation
@@ -217,10 +217,10 @@ static NSString *const KalGridViewSlideAnimationID = @"KalSwitchMonths";
 	[UIView setAnimationDidStopSelector: @selector(animationDidStop:finished:context:)];
 	
 	self.frontMonthView.top = -self.backMonthView.top;
-	self.backMonthView.top = 0.f;
+	self.backMonthView.top = 0;
 
-	self.frontMonthView.alpha = 0.f;
-	self.backMonthView.alpha = 1.f;
+	self.frontMonthView.alpha = 0;
+	self.backMonthView.alpha = 1.0;
 	
 	self.height = self.backMonthView.height;
 	

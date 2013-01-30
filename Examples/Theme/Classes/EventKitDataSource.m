@@ -48,7 +48,7 @@ static BOOL IsDateBetweenInclusive(NSDate *date, NSDate *begin, NSDate *end)
 
 - (EKEvent *)eventAtIndexPath:(NSIndexPath *)indexPath
 {
-  return [items objectAtIndex:indexPath.row];
+  return items[indexPath.row];
 }
 
 #pragma mark UITableViewDataSource protocol conformance
@@ -86,7 +86,7 @@ static BOOL IsDateBetweenInclusive(NSDate *date, NSDate *begin, NSDate *end)
     NSPredicate *predicate = [eventStore predicateForEventsWithStartDate:fromDate endDate:toDate calendars:nil];
     NSArray *matchedEvents = [eventStore eventsMatchingPredicate:predicate];
     dispatch_async(dispatch_get_main_queue(), ^{
-      NSLog(@"Fetched %d events in %f seconds", [matchedEvents count], -1.f * [fetchProfilerStart timeIntervalSinceNow]);
+      NSLog(@"Fetched %d events in %f seconds", [matchedEvents count], -[fetchProfilerStart timeIntervalSinceNow]);
       [events addObjectsFromArray:matchedEvents];
       [delegate loadedDataSource:self];
     });

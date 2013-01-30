@@ -22,8 +22,8 @@
 
 @end
 
-static const CGFloat KalViewHeaderHeight = 44.f;
-static const CGFloat KalViewMonthLabelHeight = 17.f;
+static const CGFloat KalViewHeaderHeight = 44.0;
+static const CGFloat KalViewMonthLabelHeight = 17.0;
 
 @implementation KalView
 
@@ -61,7 +61,7 @@ static const CGFloat KalViewMonthLabelHeight = 17.f;
 	// Both the tile grid and the list of events will automatically lay themselves
 	// out to fit the # of weeks in the currently displayed month.
 	// So the only part of the frame that we need to specify is the width.
-	CGRect fullWidthAutomaticLayoutFrame = CGRectMake(0.f, 0.f, self.width, 0.f);
+	CGRect fullWidthAutomaticLayoutFrame = CGRectMake(0, 0, self.width, 0);
 	
 	// The tile grid (the calendar body)
 	self.gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic: self.logic];
@@ -85,10 +85,10 @@ static const CGFloat KalViewMonthLabelHeight = 17.f;
 }
 - (void) addSubviewsToHeaderView: (UIView *) headerView
 {
-	const CGFloat KalViewChangeMonthButtonWidth = 46.0f;
-	const CGFloat KalViewChangeMonthButtonHeight = 30.0f;
-	const CGFloat KalViewMonthLabelWidth = 200.0f;
-	const CGFloat KalViewHeaderVerticalAdjust = 3.f;
+	const CGFloat KalViewChangeMonthButtonWidth = 46;
+	const CGFloat KalViewChangeMonthButtonHeight = 30;
+	const CGFloat KalViewMonthLabelWidth = 200;
+	const CGFloat KalViewHeaderVerticalAdjust = 3;
 	
 	// Header background gradient
 	UIImageView *backgroundView = [[UIImageView alloc] initWithImage: [UIImage imageNamed: @"Kal.bundle/kal_grid_background.png"]];
@@ -109,10 +109,10 @@ static const CGFloat KalViewMonthLabelHeight = 17.f;
 	[headerView addSubview: previousMonthButton];
 	
 	// Draw the selected month name centered and at the top of the view
-	CGRect monthLabelFrame = CGRectMake((self.width/2.0f) - (KalViewMonthLabelWidth/2.0f), KalViewHeaderVerticalAdjust, KalViewMonthLabelWidth, KalViewMonthLabelHeight);
+	CGRect monthLabelFrame = CGRectMake(0.5 * (self.width - KalViewMonthLabelWidth), KalViewHeaderVerticalAdjust, KalViewMonthLabelWidth, KalViewMonthLabelHeight);
 	self.headerTitleLabel = [[UILabel alloc] initWithFrame:monthLabelFrame];
 	self.headerTitleLabel.backgroundColor = [UIColor clearColor];
-	self.headerTitleLabel.font = [UIFont boldSystemFontOfSize:22.f];
+	self.headerTitleLabel.font = [UIFont boldSystemFontOfSize:22.0];
 	self.headerTitleLabel.textAlignment = UITextAlignmentCenter;
 	self.headerTitleLabel.textColor = [UIColor colorWithPatternImage: [UIImage imageNamed: @"Kal.bundle/kal_header_text_fill.png"]];
 	self.headerTitleLabel.shadowColor = [UIColor whiteColor];
@@ -139,16 +139,16 @@ static const CGFloat KalViewMonthLabelHeight = 17.f;
 	NSArray *fullWeekdayNames = dateFormatter.standaloneWeekdaySymbols;
 	NSUInteger firstWeekday = [[NSCalendar currentCalendar] firstWeekday];
 	NSUInteger i = firstWeekday - 1;
-	for (CGFloat xOffset = 0; xOffset < headerView.width; xOffset += 46.f, i = (i + 1) % 7)
+	for (CGFloat xOffset = 0; xOffset < headerView.width; xOffset += 46.0, i = (i + 1) % 7)
 	{
-		CGRect weekdayFrame = CGRectMake(xOffset, 30.f, 46.f, KalViewHeaderHeight - 29.f);
+		CGRect weekdayFrame = CGRectMake(xOffset, 30, 46.0, KalViewHeaderHeight - 29.0);
 		UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
 		weekdayLabel.backgroundColor = [UIColor clearColor];
-		weekdayLabel.font = [UIFont boldSystemFontOfSize:10.f];
+		weekdayLabel.font = [UIFont boldSystemFontOfSize:10];
 		weekdayLabel.textAlignment = UITextAlignmentCenter;
-		weekdayLabel.textColor = [UIColor colorWithRed:0.3f green:0.3f blue:0.3f alpha:1.f];
+		weekdayLabel.textColor = [UIColor colorWithWhite: 0.298 alpha: 1];
 		weekdayLabel.shadowColor = [UIColor whiteColor];
-		weekdayLabel.shadowOffset = CGSizeMake(0.f, 1.f);
+		weekdayLabel.shadowOffset = CGSizeMake(0, 1.0);
 		weekdayLabel.text = weekdayNames[i];
 		
 		[weekdayLabel setAccessibilityLabel: fullWeekdayNames[i]];
