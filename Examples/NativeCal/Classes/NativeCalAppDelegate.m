@@ -37,6 +37,8 @@
   
   // Setup the navigation stack and display it.
   navController = [[UINavigationController alloc] initWithRootViewController:kal];
+  window.rootViewController = navController;
+  
   [window addSubview:navController.view];
   [window makeKeyAndVisible];
 }

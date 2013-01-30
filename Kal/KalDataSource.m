@@ -8,51 +8,50 @@
 
 @implementation SimpleKalDataSource
 
-+ (SimpleKalDataSource*)dataSource
++ (SimpleKalDataSource *) dataSource
 {
-  return [[[[self class] alloc] init] autorelease];
+	return [[self class] new];
 }
 
 #pragma mark UITableViewDataSource protocol conformance
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *) tableView: (UITableView *) tableView cellForRowAtIndexPath: (NSIndexPath *) indexPath
 {
-  static NSString *identifier = @"MyCell";
-  UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
-  if (!cell) {
-    cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier] autorelease];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-  }
-  
-  cell.textLabel.text = @"Filler text";
-  return cell;
+	static NSString *identifier = @"MyCell";
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+	if (!cell)
+	{
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	}
+	
+	cell.textLabel.text = @"FILLER TEXT";
+	return cell;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+- (NSInteger) tableView: (UITableView *) tableView numberOfRowsInSection: (NSInteger) section
 {
   return 0;
 }
 
-#pragma mark KalDataSource protocol conformance
+#pragma mark Kal Data Source
 
-- (void)presentingDatesFrom:(NSDate *)fromDate to:(NSDate *)toDate delegate:(id<KalDataSourceCallbacks>)delegate
+- (NSArray *) markedDatesFrom: (NSDate *) fromDate to: (NSDate *) toDate
 {
-  [delegate loadedDataSource:self];
+	return @[];
 }
 
-- (NSArray *)markedDatesFrom:(NSDate *)fromDate to:(NSDate *)toDate
+- (void) presentingDatesFrom: (NSDate *) fromDate to: (NSDate *) toDate delegate: (id <KalDataSourceCallbacks>) delegate
 {
-  return [NSArray array];
+	[delegate loadedDataSource: self];
 }
-
-- (void)loadItemsFromDate:(NSDate *)fromDate toDate:(NSDate *)toDate
+- (void) loadItemsFromDate: (NSDate *) fromDate toDate: (NSDate *) toDate
 {
-  // do nothing
+	// Do nothing
 }
-
-- (void)removeAllItems
+- (void) removeAllItems
 {
-  // do nothing
+	// Do nothing
 }
 
 @end

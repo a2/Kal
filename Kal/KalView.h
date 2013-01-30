@@ -4,8 +4,9 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "KalGridView.h"
 
-@class KalGridView, KalLogic, KalDate;
+@class KalLogic, KalDate;
 @protocol KalViewDelegate, KalDataSourceCallbacks;
 
 /*
@@ -38,41 +39,25 @@
  *
  */
 @interface KalView : UIView
-{
-  UILabel *headerTitleLabel;
-  KalGridView *gridView;
-  UITableView *tableView;
-  UIImageView *shadowView;
-  id<KalViewDelegate> delegate;
-  KalLogic *logic;
-}
 
-@property (nonatomic, assign) id<KalViewDelegate> delegate;
-@property (nonatomic, readonly) UITableView *tableView;
-@property (nonatomic, readonly) KalDate *selectedDate;
+@property (nonatomic, getter = isSliding) BOOL sliding;
+@property (nonatomic, strong, readonly) UITableView *tableView;
+@property (nonatomic, weak) id <KalViewDelegate> delegate;
+@property (nonatomic, weak, readonly) KalDate *selectedDate;
 
-- (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)delegate logic:(KalLogic *)logic;
-- (BOOL)isSliding;
-- (void)selectDate:(KalDate *)date;
-- (void)markTilesForDates:(NSArray *)dates;
-- (void)redrawEntireMonth;
+- (id) initWithFrame: (CGRect) frame logic: (KalLogic *) logic;
 
-// These 3 methods are exposed for the delegate. They should be called 
-// *after* the KalLogic has moved to the month specified by the user.
-- (void)slideDown;
-- (void)slideUp;
-- (void)jumpToSelectedMonth;    // change months without animation (i.e. when directly switching to "Today")
+- (void) markTilesForDates:(NSArray *) dates;
+- (void) redrawEntireMonth;
+- (void) selectDate: (KalDate *) date;
+- (void) slide: (KalGridViewSlideType) slideType; // This method is exposed for the delegate. It should be called *after* the KalLogic has moved to the month specified by the user.
 
 @end
 
-#pragma mark -
+@protocol KalViewDelegate <NSObject>
 
-@class KalDate;
-
-@protocol KalViewDelegate
-
-- (void)showPreviousMonth;
-- (void)showFollowingMonth;
-- (void)didSelectDate:(KalDate *)date;
+- (void) showPreviousMonth;
+- (void) showFollowingMonth;
+- (void) didSelectDate: (KalDate *) date;
 
 @end
