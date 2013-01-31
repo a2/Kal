@@ -62,10 +62,20 @@ static NSString *const KalGridViewSlideAnimationID = @"KalSwitchMonths";
 	return self;
 }
 
+- (UIColor *) gridBackgroundColor
+{
+	return _gridBackgroundColor ?: [UIColor colorWithRed: 0.63 green: 0.65 blue: 0.68 alpha: 1.0];
+}
+
+- (UIImage *) gridBackgroundImage
+{
+	return _gridBackgroundImage ?: [UIImage imageNamed: @"Kal.bundle/kal_grid_background.png"];
+}
+
 - (void) drawRect: (CGRect) rect
 {
-	[[UIImage imageNamed: @"Kal.bundle/kal_grid_background.png"] drawInRect: rect];
-	[[UIColor colorWithRed: 0.63 green: 0.65 blue: 0.68 alpha: 1.0] setFill];
+	[self.gridBackgroundImage drawInRect: rect];
+	[self.gridBackgroundColor setFill];
 	
 	UIRectFill(CGRectMake(0, self.height - 1.0, self.width, 1.0));
 }

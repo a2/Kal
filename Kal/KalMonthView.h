@@ -10,6 +10,7 @@
 @interface KalMonthView : UIView
 
 @property (nonatomic) NSUInteger numberOfWeeks;
+@property (nonatomic, strong) UIImage *backgroundImage;
 
 - (KalTileView *) firstTileOfMonth;
 - (KalTileView *) tileForDate: (KalDate *) date;

@@ -29,6 +29,8 @@ typedef NS_ENUM(NSUInteger, KalGridViewSlideType) {
 
 @property (nonatomic, readonly, getter = isTransitioning) BOOL transitioning;
 @property (nonatomic, strong, readonly) KalDate *selectedDate;
+@property (nonatomic, strong) UIColor *gridBackgroundColor;
+@property (nonatomic, strong) UIImage *gridBackgroundImage;
 @property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, weak) id <KalViewDelegate> delegate;
 

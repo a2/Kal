@@ -7,6 +7,7 @@
 #import "EventKitDataSource.h"
 #import "Kal.h"
 #import "KalTileView.h"
+#import "KalMonthView.h"
 
 #import <EventKit/EventKit.h>
 #import <EventKitUI/EventKitUI.h>
@@ -26,12 +27,20 @@
 	[tileView setTextColor: [UIColor whiteColor] forState: KalTileViewStateSelected];
 	[tileView setTextColor: [UIColor magentaColor] forState: KalTileViewStateSelected | KalTileViewStateToday];
 	
+	KalMonthView *monthView = [KalMonthView appearance];
+	[monthView setBackgroundImage: [UIImage imageNamed: @"light-green"]];
+	
 	KalView *view = [KalView appearance];
+	[view setGridBackgroundImage: [UIImage imageNamed: @"light-green"]];
 	[view setGridDropShadowImage: [UIImage imageNamed: @"grid-shadow"]];
 	[view setLeftArrowImage: [UIImage imageNamed: @"left-arrow"] forState: UIControlStateNormal];
 	[view setRightArrowImage: [UIImage imageNamed: @"right-arrow"] forState: UIControlStateNormal];
 	[view setTitleLabelTextColor: [UIColor redColor]];
 	[view setWeekdayLabelTextColor: [UIColor purpleColor]];
+	
+	KalGridView *gridView = [KalGridView appearance];
+	[gridView setGridBackgroundColor: [UIColor colorWithRed:0.893 green:0.911 blue:0.788 alpha:1.000]];
+	[gridView setGridBackgroundImage: [UIImage imageNamed: @"light-green"]];
 	
 	/*
 	 *    Kal Initialization
