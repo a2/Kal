@@ -47,7 +47,7 @@
 	 *    Kal Initialization
 	 *
 	 * When the calendar is first displayed to the user, Kal will automatically select today's date.
-	 * If your application requires an arbitrary starting date, use -[KalViewController initWithSelectedDate:]
+	 * If your application requires an arbitrary starting date, use -[KalViewController initWithSelectedDate:wantsTableView:]
 	 * instead of -[KalViewController init].
 	 */
 	self.kal = [[KalViewController alloc] initWithSelectedDate: [NSDate date] wantsTableView: NO];
