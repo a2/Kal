@@ -22,6 +22,7 @@
 	[tileView setBackgroundImage: [UIImage imageNamed: @"green"] forState: KalTileViewStateNormal];
 	[tileView setBackgroundImage: [UIImage imageNamed: @"dark-green"] forState: KalTileViewStateSelected];
 	[tileView setBackgroundImage: [UIImage imageNamed: @"light-green"] forState: KalTileViewStateAdjacent];
+	[tileView setBackgroundImage: [UIImage imageNamed: @"blue"] forState: KalTileViewStateAdjacent | KalTileViewStateToday];
 	[tileView setTextColor: [UIColor blackColor] forState: KalTileViewStateNormal];
 	[tileView setTextColor: [UIColor greenColor] forState: KalTileViewStateToday];
 	[tileView setTextColor: [UIColor whiteColor] forState: KalTileViewStateSelected];
@@ -49,7 +50,7 @@
 	 * If your application requires an arbitrary starting date, use -[KalViewController initWithSelectedDate:]
 	 * instead of -[KalViewController init].
 	 */
-	self.kal = [[KalViewController alloc] init];
+	self.kal = [[KalViewController alloc] initWithSelectedDate: [NSDate date] wantsTableView: NO];
 	self.kal.title = @"Theme";
 
 	/*
@@ -57,10 +58,11 @@
 	 *
 	 */
 	self.kal.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle: @"Today" style: UIBarButtonItemStyleBordered target: self action: @selector(showAndSelectToday)];
-	self.kal.delegate = self;
+	self.kal.tableView.delegate = self;
 	
 	self.dataSource = [[EventKitDataSource alloc] init];
 	self.kal.dataSource = self.dataSource;
+	self.kal.tableView.dataSource = self.dataSource;
 
 	// Setup the navigation stack and display it.
 	self.navigationController = [[UINavigationController alloc] initWithRootViewController: self.kal];

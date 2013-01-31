@@ -17,6 +17,7 @@ static NSDictionary *KalViewDefaultAppearance;
 
 @property (nonatomic) BOOL hasTitleLabelTextColor;
 @property (nonatomic) BOOL hasWeekdayLabelTextColor;
+@property (nonatomic) BOOL wantsTableView;
 @property (nonatomic, strong) KalLogic *logic;
 @property (nonatomic, strong) KalGridView *gridView;
 @property (nonatomic, strong) NSArray *weekdayLabels;
@@ -43,15 +44,16 @@ static NSDictionary *KalViewDefaultAppearance;
 
 - (id) initWithFrame: (CGRect) frame
 {
-	[NSException raise: @"Incomplete Initializer" format: @"KalView must be initialized with a KalLogic. Use the initWithFrame:logic: method."];
+	[NSException raise: @"Incomplete Initializer" format: @"KalView must be initialized with a KalLogic. Use the initWithFrame:logic:wantsTableView: method."];
 	return nil;
 }
-- (id) initWithFrame: (CGRect) frame logic: (KalLogic *) theLogic
+- (id) initWithFrame: (CGRect) frame logic: (KalLogic *) theLogic wantsTableView: (BOOL) flag
 {
 	if ((self = [super initWithFrame: frame]))
 	{
 		self.logic = theLogic;
 		[self.logic addObserver: self forKeyPath: @"localizedMonthAndYear" options: NSKeyValueObservingOptionNew context: NULL];
+		self.wantsTableView = flag;
 		
 		self.autoresizesSubviews = YES;
 		self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
@@ -79,15 +81,18 @@ static NSDictionary *KalViewDefaultAppearance;
 	[contentView addSubview: self.gridView];
 	
 	// The list of events for the selected day
-	self.tableView = [[UITableView alloc] initWithFrame: fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
-	self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	[contentView addSubview: self.tableView];
-	
-	// Drop shadow below tile grid and over the list of events for the selected day
-	self.shadowView = [[UIImageView alloc] initWithFrame: fullWidthAutomaticLayoutFrame];
-	self.shadowView.image = self.gridDropShadowImage;
-	self.shadowView.height = self.shadowView.image.size.height;
-	[contentView addSubview: self.shadowView];
+	if (self.wantsTableView)
+	{
+		self.tableView = [[UITableView alloc] initWithFrame: fullWidthAutomaticLayoutFrame style:UITableViewStylePlain];
+		self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		[contentView addSubview: self.tableView];
+		
+		// Drop shadow below tile grid and over the list of events for the selected day
+		self.shadowView = [[UIImageView alloc] initWithFrame: fullWidthAutomaticLayoutFrame];
+		self.shadowView.image = self.gridDropShadowImage;
+		self.shadowView.height = self.shadowView.image.size.height;
+		[contentView addSubview: self.shadowView];
+	}
 	
 	// Trigger the initial KVO update to finish the contentView layout
 	[self.gridView sizeToFit];

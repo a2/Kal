@@ -45,7 +45,7 @@
 @property (nonatomic, weak) id <KalViewDelegate> delegate;
 @property (nonatomic, weak, readonly) KalDate *selectedDate;
 
-- (id) initWithFrame: (CGRect) frame logic: (KalLogic *) logic;
+- (id) initWithFrame: (CGRect) frame logic: (KalLogic *) logic wantsTableView: (BOOL) flag;
 
 - (void) markTilesForDates:(NSArray *) dates;
 - (void) redrawEntireMonth;

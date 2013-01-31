@@ -13,10 +13,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 
 @interface KalViewController ()
 
+@property (nonatomic) BOOL wantsTableView;
 @property (nonatomic, strong) KalLogic *logic;
-@property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong, readwrite) NSDate *initialDate;
 @property (nonatomic, strong, readwrite) NSDate *selectedDate;
+@property (nonatomic, weak, readwrite) UITableView *tableView;
 
 - (KalView *) calendarView;
 
@@ -26,15 +27,16 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 
 - (id) init
 {
-	return [self initWithSelectedDate: [NSDate date]];
+	return [self initWithSelectedDate: [NSDate date] wantsTableView: YES];
 }
-- (id) initWithSelectedDate: (NSDate *) date
+- (id) initWithSelectedDate: (NSDate *) date wantsTableView: (BOOL) flag
 {
 	if ((self = [super init]))
 	{
 		self.logic = [[KalLogic alloc] initWithDate: date];
 		self.initialDate = date;
 		self.selectedDate = date;
+		self.wantsTableView = flag;
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(significantTimeChangeOccurred) name: UIApplicationSignificantTimeChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reloadData) name: KalDataSourceChangedNotification object:nil];
@@ -66,22 +68,6 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 - (void) reloadData
 {
 	[self.dataSource presentingDatesFrom: self.logic.fromDate to: self.logic.toDate delegate: self];
-}
-- (void) setDataSource: (id <KalDataSource>) aDataSource
-{
-	if (_dataSource == aDataSource)
-		return;
-	
-    _dataSource = aDataSource;
-    self.tableView.dataSource = aDataSource;
-}
-- (void) setDelegate: (id <UITableViewDelegate>) aDelegate
-{
-	if (_delegate == aDelegate)
-		return;
-	
-	_delegate = aDelegate;
-	self.tableView.delegate = aDelegate;
 }
 - (void) significantTimeChangeOccurred
 {
@@ -156,13 +142,11 @@ NSString *const KalDataSourceChangedNotification = @"KalDataSourceChangedNotific
 {
 	if (!self.title) self.title = @"Calendar";
 	
-	KalView *kalView = [[KalView alloc] initWithFrame: [UIScreen mainScreen].bounds logic: self.logic];
+	KalView *kalView = [[KalView alloc] initWithFrame: [UIScreen mainScreen].bounds logic: self.logic wantsTableView: self.wantsTableView];
 	kalView.delegate = self;
 	
 	self.view = kalView;
 	self.tableView = kalView.tableView;
-	self.tableView.dataSource = self.dataSource;
-	self.tableView.delegate = self.delegate;
 	[kalView selectDate: [KalDate dateWithDate: self.initialDate]];
 	[self reloadData];
 }

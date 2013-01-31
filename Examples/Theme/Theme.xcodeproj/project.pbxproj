@@ -15,6 +15,7 @@
 		005AEDF516B9D1C30086D239 /* left-arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005AEDF116B9D1C30086D239 /* left-arrow@2x.png */; };
 		005AEDF616B9D1C30086D239 /* right-arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 005AEDF216B9D1C30086D239 /* right-arrow.png */; };
 		005AEDF716B9D1C30086D239 /* right-arrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005AEDF316B9D1C30086D239 /* right-arrow@2x.png */; };
+		009A63FC16BA24470073567E /* blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 009A63FB16BA24470073567E /* blue.png */; };
 		00DD320616B9C34900A382AE /* dark-green.png in Resources */ = {isa = PBXBuildFile; fileRef = 00DD320416B9C34900A382AE /* dark-green.png */; };
 		00DD320716B9C34900A382AE /* green.png in Resources */ = {isa = PBXBuildFile; fileRef = 00DD320516B9C34900A382AE /* green.png */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
@@ -47,6 +48,7 @@
 		005AEDF116B9D1C30086D239 /* left-arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "left-arrow@2x.png"; sourceTree = "<group>"; };
 		005AEDF216B9D1C30086D239 /* right-arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-arrow.png"; sourceTree = "<group>"; };
 		005AEDF316B9D1C30086D239 /* right-arrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "right-arrow@2x.png"; sourceTree = "<group>"; };
+		009A63FB16BA24470073567E /* blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blue.png; sourceTree = "<group>"; };
 		00DD320416B9C34900A382AE /* dark-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dark-green.png"; sourceTree = "<group>"; };
 		00DD320516B9C34900A382AE /* green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = green.png; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -136,6 +138,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				009A63FB16BA24470073567E /* blue.png */,
 				00DD320416B9C34900A382AE /* dark-green.png */,
 				0039E87C16B8EC8D0040417E /* Default-568h@2x.png */,
 				00DD320516B9C34900A382AE /* green.png */,
@@ -251,6 +254,7 @@
 				005AEDF516B9D1C30086D239 /* left-arrow@2x.png in Resources */,
 				005AEDF616B9D1C30086D239 /* right-arrow.png in Resources */,
 				005AEDF716B9D1C30086D239 /* right-arrow@2x.png in Resources */,
+				009A63FC16BA24470073567E /* blue.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
